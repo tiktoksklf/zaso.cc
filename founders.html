@@ -5,39 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Founders - zaso.cc</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #000; /* black background */
+      color: #a78bfa; /* purple text */
+      font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      display: flex;
+      justify-content: center;
+      align-items: center; /* vertical center */
+      padding: 2rem;
+    }
+    body {
+      min-height: 100vh;
+    }
+    main {
+      background-color: #1e1b2c; /* dark purple/black panel */
+      border: 2px solid #a78bfa; /* purple border */
+      border-radius: 0.75rem;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 10px #7c3aedaa;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+    }
+    header a {
+      color: #a78bfa;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    header a:hover {
+      text-decoration: underline;
+      color: #d8b4fe;
+    }
+    img {
+      width: 9rem;
+      height: 9rem;
+      border-radius: 9999px;
+      object-fit: cover;
+      border: 4px solid #3b82f6; /* blue border */
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #c4b5fd;
+      user-select: none;
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #c4b5fd;
+    }
+    p, a {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      user-select: text;
+    }
+    a {
+      color: #a78bfa;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+      color: #d8b4fe;
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-gray-100 flex flex-col items-center min-h-screen p-6">
+<body>
 
-  <!-- Navigation -->
-  <header class="w-full max-w-md mb-8 flex justify-start">
-    <a href="index.html" class="text-blue-400 hover:underline font-semibold">&larr; Home</a>
+  <header>
+    <a href="index.html">← Home</a>
   </header>
 
-  <!-- Main content -->
-  <main class="w-full max-w-md bg-gray-800 rounded-lg p-8 shadow-lg flex flex-col items-center">
-    <!-- Profile Picture -->
-    <img
-      src="Screenshot 2025-06-18 151659.png" 
-      alt="Profile picture of zaso"
-      class="w-36 h-36 rounded-full mb-6 object-cover border-4 border-blue-500"
-      loading="lazy"
-    />
-
-    <!-- Username -->
-    <h1 class="text-3xl font-bold mb-4">@zaso</h1>
-
-    <!-- About Me -->
-    <section class="mb-6 text-center">
-      <h2 class="text-xl font-semibold mb-2">About me:</h2>
-      <p>17 year old thats been coding c#,py,html,js since 2023. Made the viral program zaso.dev</p>
-    </section>
-
-    <!-- Telegram -->
+  <main>
+    <img src="Screenshot 2025-06-18 151659.png" alt="Profile picture of zaso" loading="lazy" />
+    <h1>@zaso</h1>
     <section>
-      <h2 class="text-xl font-semibold mb-2">Telegram:</h2>
-      <a href="https://t.me/extort1ng" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">
-        https://t.me/extort1ng
-      </a>
+      <h2>About me:</h2>
+      <p>17 year old thats been coding c#, py, html, js since 2023. Made the viral program zaso.dev</p>
+    </section>
+    <section>
+      <h2>Telegram:</h2>
+      <a href="https://t.me/extort1ng" target="_blank" rel="noopener noreferrer">https://t.me/extort1ng</a>
     </section>
   </main>
 
