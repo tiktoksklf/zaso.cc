@@ -102,21 +102,41 @@
       color: #ddd6fe;
       text-decoration: underline;
     }
+
+    /* Continue button styling */
+    #continue-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border: 2px solid #a78bfa;
+      background: transparent;
+      color: #a78bfa;
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #continue-btn:hover, #continue-btn:focus {
+      background-color: #7c3aed;
+      color: #000;
+      outline: none;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
   <!-- BOOT INTRO -->
-  <div id="intro-boot" class="fixed inset-0 p-8 z-50 text-sm">
-    <pre id="boot-log" class="whitespace-pre-wrap leading-relaxed">
+  <div id="intro-boot" class="fixed inset-0 p-8 z-50 text-sm flex flex-col items-center justify-center">
+    <pre id="boot-log" class="whitespace-pre-wrap leading-relaxed text-center max-w-lg">
 [BOOT] update log v1.1
 [+] New ui
 [+] New founders page
 [+] updated tos 
 [+] Dating added
 
-[PRESS ENTER TO CONTINUE]
+
     </pre>
+    <button id="continue-btn" aria-label="Continue to main content">Tap to Continue</button>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -159,18 +179,25 @@
   </div>
 
   <script>
-    // Boot screen: press Enter to continue
+    // Function to hide boot screen and show main content
+    function continueBoot() {
+      const boot = document.getElementById("intro-boot");
+      boot.style.transition = "opacity 0.8s ease";
+      boot.style.opacity = 0;
+      setTimeout(() => {
+        boot.style.display = "none";
+        document.getElementById("main-content").classList.remove("hidden");
+      }, 800);
+    }
+
+    // Boot screen: press Enter or tap button to continue
     document.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        const boot = document.getElementById("intro-boot");
-        boot.style.transition = "opacity 0.8s ease";
-        boot.style.opacity = 0;
-        setTimeout(() => {
-          boot.style.display = "none";
-          document.getElementById("main-content").classList.remove("hidden");
-        }, 800);
+        continueBoot();
       }
     });
+
+    document.getElementById("continue-btn").addEventListener("click", continueBoot);
 
     const osintData = {
       "Domain Name": [
