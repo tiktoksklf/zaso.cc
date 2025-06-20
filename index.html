@@ -1,131 +1,285 @@
-<html lang="en"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ZASO.cc OSINT Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
   <style>
-    /* your existing styles remain unchanged */
+    body {
+      font-family: 'VT323', monospace;
+      background-color: #000; /* black background */
+      color: #a78bfa; /* purple text */
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      animation: flicker 1s infinite;
+      pointer-events: none;
+      z-index: 50;
+    }
+    @keyframes flicker {
+      0%, 100% { opacity: 0.05; }
+      50% { opacity: 0.15; }
+    }
+    #intro-boot {
+      background: #000;
+      color: #a78bfa;
+    }
+
+    /* Category header row with circle + text */
+    .category-header {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed #a78bfa; /* purple dashed line */
+      color: #a78bfa;
+      font-weight: 700;
+      transition: background-color 0.2s ease;
+    }
+    .category-header:hover {
+      background-color: rgba(167, 139, 250, 0.1);
+    }
+
+    /* Circle with letter */
+    .category-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #7c3aed; /* purple fill */
+      border: 2px solid #a78bfa; /* lighter purple border */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000; /* black text inside circle */
+      font-weight: 700;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+    /* Rotate circle when expanded */
+    .category-header.expanded .category-circle {
+      transform: rotate(90deg);
+    }
+
+    /* Expanded list container */
+    .expanded-list {
+      margin-left: 48px; /* indent to line up under circle */
+      padding-left: 1rem;
+      border-left: 3px solid #a78bfa; /* thick purple line */
+      margin-bottom: 1.5rem;
+      user-select: text;
+      display: none;
+    }
+    .expanded-list.show {
+      display: block;
+    }
+
+    /* Each link inside expanded list */
+    .expanded-list a {
+      display: block;
+      color: #a78bfa;
+      text-decoration: none;
+      margin: 0.25rem 0;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    .expanded-list a:hover {
+      color: #ddd6fe;
+      text-decoration: underline;
+    }
   </style>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
-  <!-- HEADER -->
-  <header class="flex justify-between items-center px-6 py-4 border-b border-gray-700">
-    <div>
-      <h1 class="text-3xl font-bold leading-tight">zaso.cc</h1>
-      <p class="text-sm text-gray-400 -mt-1">best osint tool</p>
-    </div>
-    <nav>
-      <a href="tos.html" class="text-blue-400 hover:underline font-semibold">TOS</a> |
-      <a href="founders.html" class="text-blue-400 hover:underline font-semibold">Founders</a>
-    </nav>
-  </header>
+  <!-- BOOT INTRO -->
+  <div id="intro-boot" class="fixed inset-0 p-8 z-50 text-sm">
+    <pre id="boot-log" class="whitespace-pre-wrap leading-relaxed">
+[BOOT] Initializing ZASO.cc systems...
+[OK] Cipher modules booted
+[OK] Identity mesh verified
+[+] User: zaso
+[+] Launching intelligence node...
+
+[PRESS ENTER TO CONTINUE]
+    </pre>
+  </div>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-grow p-6 flex flex-col items-center">
-    <h2 class="text-4xl font-bold mb-8">OSINT Dashboard</h2>
-
-    <div class="w-full max-w-3xl bg-gray-800 rounded shadow-lg">
-      <div id="categories" class="divide-y divide-gray-700">
-        <!-- Categories will be generated dynamically by JavaScript -->
+  <div id="main-content" class="hidden flex flex-col flex-grow items-center px-4 max-w-4xl mx-auto">
+    <!-- HEADER -->
+    <header
+      class="relative flex justify-between items-center w-full px-6 py-4 border-b border-purple-600 overflow-hidden mb-8"
+    >
+      <div class="relative z-10">
+        <h1 class="text-3xl font-bold leading-tight text-purple-400">zaso.cc</h1>
+        <p class="text-sm text-purple-300 -mt-1">OSINT infiltration interface</p>
       </div>
-    </div>
-  </main>
+      <img
+        src="https://media.giphy.com/media/ZkCfzygNzKlNK/giphy.gif"
+        class="absolute inset-0 h-full w-full object-cover opacity-10 z-0"
+        alt="glitch background"
+      />
+      <nav class="text-purple-300 z-10">
+        <a href="tos.html" class="hover:underline">TOS</a> |
+        <a href="founders.html" class="hover:underline">Founders</a>
+      </nav>
+    </header>
 
-<script>
-  const osintData = {
-    "Domain Name": [
-      { name: "Whois Lookup", url: "https://who.is/" },
-      { name: "SecurityTrails Subdomains", url: "https://securitytrails.com/" },
-      { name: "crt.sh SSL Certificates", url: "https://crt.sh/" },
-      { name: "Passive DNS", url: "https://passivedns.cert.pl/" },
-      { name: "VirusTotal Domain Report", url: "https://www.virustotal.com/gui/home/domain" }
-    ],
-    "Email Address": [
-      { name: "Have I Been Pwned", url: "https://haveibeenpwned.com/" },
-      { name: "Thatsthem Reverse Email Lookup", url: "https://thatsthem.com/reverse-email-lookup" },
-      { name: "Epieos", url: "https://epieos.com/" },
-      { name: "Sylva Email Search", url: "https://sylva.pfeister.dev/" }
-    ],
-    "Username": [
-      { name: "Sylva Username Search", url: "https://sylva.pfeister.dev/" },
-      { name: "Namechk", url: "https://namechk.com/" },
-      { name: "Sherlock GitHub", url: "https://github.com/sherlock-project/sherlock" },
-      { name: "WhatsMyName", url: "https://whatsmyname.app/" },
-      { name: "GitHub User Events", url: "https://github.com/" },
-      { name: "Tinder Profile", url: "https://tinder.com/" },
-      { name: "Keybase", url: "https://keybase.io/" },
-      { name: "Google site search Amazon", url: "https://www.google.com/" }
-    ],
-    "IP & MAC Address": [
-      { name: "URLScan Search", url: "https://urlscan.io/search/#*" },
-      { name: "Netlas", url: "https://netlas.io/" },
-      { name: "ZoomEye", url: "https://www.zoomeye.ai/" },
-      { name: "Nmap Download", url: "https://nmap.org/download.html" },
-      { name: "Port Scanner Online", url: "https://portscanner.online/" },
-      { name: "Reverse DNS Lookup", url: "https://hackertarget.com/reverse-dns-lookup/" }
-    ],
-    "Telephone Number": [
-      { name: "WhoCalld", url: "https://whocalld.com/" },
-      { name: "NumLookup", url: "https://www.numlookup.com/" },
-      { name: "NumSpy", url: "https://bhattsameer.github.io/numspy/" }
-    ],
-    "Public Records": [
-      { name: "Black Book Online", url: "https://www.blackbookonline.info/USA-County-Court-Records.aspx" },
-      { name: "CityProtect", url: "https://cityprotect.com/" },
-      { name: "Mugshots", url: "https://mugshots.com/" },
-      { name: "NSOPW - Public Sex Offender Registries", url: "https://www.nsopw.gov/search-public-sex-offender-registries" }
-    ],
-    "Dating": [
-      { name: "Match.com", url: "https://www.match.com/" },
-      { name: "AreYouInterested", url: "https://www.areyouinterested.com/" },
-      { name: "Tinder", url: "https://tinder.com/" },
-      { name: "Bumble", url: "https://bumble.com/" },
-      { name: "Hinge", url: "https://hinge.co/en-gb" }
-    ]
-  };
+    <!-- ASCII Banner -->
+    <pre class="text-purple-400 text-sm mb-12 leading-tight text-center">
+ ▄██████▄     ▄████████  ▄█  ███▄▄▄▄       ███     
+███    ███   ███    ███ ███  ███▀▀▀██▄ ▀█████████▄ 
+███    ███   ███    █▀  ███▌ ███   ███    ▀███▀▀██ 
+███    ███   ███        ███▌ ███   ███     ███   ▀ 
+███    ███ ▀███████████ ███▌ ███   ███     ███     
+███    ███          ███ ███  ███   ███     ███     
+███    ███    ▄█    ███ ███  ███   ███     ███     
+ ▀██████▀   ▄████████▀  █▀    ▀█   █▀     ▄████▀   
+    </pre>
 
-  const categoriesContainer = document.getElementById('categories');
+    <!-- Categories container -->
+    <section id="categories" class="w-full border border-purple-600 rounded shadow-lg p-6">
+      <!-- JS will inject categories here -->
+    </section>
+  </div>
 
-  Object.entries(osintData).forEach(([category, links]) => {
-    const categoryDiv = document.createElement('div');
-    categoryDiv.className = "p-4 cursor-pointer select-none";
-
-    const header = document.createElement('h2');
-    header.className = "text-xl font-semibold flex justify-between items-center";
-    header.innerHTML = `${category} <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
-
-    categoryDiv.appendChild(header);
-
-    const content = document.createElement('div');
-    content.className = "mt-3 space-y-2 max-h-0 overflow-hidden transition-all duration-300";
-
-    links.forEach(link => {
-      const a = document.createElement('a');
-      a.href = link.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.className = "block text-blue-400 hover:underline";
-      a.textContent = link.name;
-      content.appendChild(a);
-    });
-
-    categoryDiv.appendChild(content);
-
-    header.addEventListener('click', () => {
-      const isOpen = content.style.maxHeight && content.style.maxHeight !== "0px";
-      if (isOpen) {
-        content.style.maxHeight = "0";
-        header.querySelector('svg').style.transform = "rotate(0deg)";
-      } else {
-        content.style.maxHeight = content.scrollHeight + "px";
-        header.querySelector('svg').style.transform = "rotate(180deg)";
+  <script>
+    // Boot screen: press Enter to continue
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const boot = document.getElementById("intro-boot");
+        boot.style.transition = "opacity 0.8s ease";
+        boot.style.opacity = 0;
+        setTimeout(() => {
+          boot.style.display = "none";
+          document.getElementById("main-content").classList.remove("hidden");
+        }, 800);
       }
     });
 
-    categoriesContainer.appendChild(categoryDiv);
-  });
-</script>
+    const osintData = {
+      "Domain Name": [
+        { name: "Whois Lookup", url: "https://who.is/" },
+        { name: "SecurityTrails Subdomains", url: "https://securitytrails.com/" },
+        { name: "crt.sh SSL Certificates", url: "https://crt.sh/" },
+        { name: "Passive DNS", url: "https://passivedns.cert.pl/" },
+        { name: "VirusTotal Domain Report", url: "https://www.virustotal.com/gui/home/domain" },
+      ],
+      "Email Address": [
+        { name: "Have I Been Pwned", url: "https://haveibeenpwned.com/" },
+        { name: "Thatsthem Reverse Email Lookup", url: "https://thatsthem.com/reverse-email-lookup" },
+        { name: "Epieos", url: "https://epieos.com/" },
+        { name: "Sylva Email Search", url: "https://sylva.pfeister.dev/" },
+      ],
+      Username: [
+        { name: "Sylva Username Search", url: "https://sylva.pfeister.dev/" },
+        { name: "Namechk", url: "https://namechk.com/" },
+        { name: "Sherlock GitHub", url: "https://github.com/sherlock-project/sherlock" },
+        { name: "WhatsMyName", url: "https://whatsmyname.app/" },
+        { name: "GitHub User Events", url: "https://github.com/" },
+        { name: "Tinder Profile", url: "https://tinder.com/" },
+        { name: "Keybase", url: "https://keybase.io/" },
+        { name: "Google site search Amazon", url: "https://www.google.com/" },
+      ],
+      "IP & MAC Address": [
+        { name: "URLScan Search", url: "https://urlscan.io/search/#*" },
+        { name: "Netlas", url: "https://netlas.io/" },
+        { name: "ZoomEye", url: "https://www.zoomeye.ai/" },
+        { name: "Nmap Download", url: "https://nmap.org/download.html" },
+        { name: "Port Scanner Online", url: "https://portscanner.online/" },
+        { name: "Reverse DNS Lookup", url: "https://hackertarget.com/reverse-dns-lookup/" },
+      ],
+      "Telephone Number": [
+        { name: "WhoCalld", url: "https://whocalld.com/" },
+        { name: "NumLookup", url: "https://www.numlookup.com/" },
+        { name: "NumSpy", url: "https://bhattsameer.github.io/numspy/" },
+      ],
+      "Public Records": [
+        { name: "Black Book Online", url: "https://www.blackbookonline.info/USA-County-Court-Records.aspx" },
+        { name: "CityProtect", url: "https://cityprotect.com/" },
+        { name: "Mugshots", url: "https://mugshots.com/" },
+        { name: "NSOPW - Public Sex Offender Registries", url: "https://www.nsopw.gov/search-public-sex-offender-registries" },
+      ],
+      Dating: [
+        { name: "Match.com", url: "https://www.match.com/" },
+        { name: "AreYouInterested", url: "https://www.areyouinterested.com/" },
+        { name: "Tinder", url: "https://tinder.com/" },
+        { name: "Bumble", url: "https://bumble.com/" },
+        { name: "Hinge", url: "https://hinge.co/en-gb" },
+      ],
+    };
 
+    const categoriesDiv = document.getElementById("categories");
+
+    function createCategoryElement(category, tools) {
+      const container = document.createElement("div");
+
+      // Header
+      const header = document.createElement("div");
+      header.className = "category-header";
+
+      // Circle with first letter
+      const circle = document.createElement("div");
+      circle.className = "category-circle";
+      circle.textContent = category.charAt(0).toUpperCase();
+
+      // Category name text
+      const title = document.createElement("div");
+      title.textContent = category;
+
+      header.appendChild(circle);
+      header.appendChild(title);
+
+      // Expanded tools list (hidden initially)
+      const list = document.createElement("div");
+      list.className = "expanded-list";
+
+      tools.forEach(({ name, url }) => {
+        const a = document.createElement("a");
+        a.href = url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = name;
+        list.appendChild(a);
+      });
+
+      container.appendChild(header);
+      container.appendChild(list);
+
+      // Toggle on header click
+      header.addEventListener("click", () => {
+        const isShown = list.classList.contains("show");
+        if (isShown) {
+          list.classList.remove("show");
+          header.classList.remove("expanded");
+        } else {
+          list.classList.add("show");
+          header.classList.add("expanded");
+        }
+      });
+
+      return container;
+    }
+
+    // Render all categories closed by default (so lists hidden)
+    Object.entries(osintData).forEach(([cat, tools]) => {
+      categoriesDiv.appendChild(createCategoryElement(cat, tools));
+    });
+  </script>
 </body>
 </html>
